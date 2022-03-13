@@ -11,15 +11,24 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+
+import clases.Coordinador;
+import vo.NacimientoVO;
+import vo.PersonaVO;
+
 import javax.swing.JSeparator;
 
 public class RegistrarPersonasGui extends JDialog implements ActionListener{
 
+	/**
+	 * 
+	 */
 	private final JPanel contentPanel = new JPanel();
 	private JTextField txtDocumento;
 	private JTextField txtNombre;
@@ -35,6 +44,7 @@ public class RegistrarPersonasGui extends JDialog implements ActionListener{
 	private JButton btnAgregarMascotas;
 	private JButton btnCancelar;
 	private JButton btnRegistrar;
+	private Coordinador miCoordinador;
 
 
 	/**
@@ -193,6 +203,8 @@ public class RegistrarPersonasGui extends JDialog implements ActionListener{
 		btnRegistrar.setBounds(364, 276, 89, 23);
 		btnRegistrar.addActionListener(this);
 		panel.add(btnRegistrar);
+		btnCancelar.addActionListener(this);
+		
 	}
 
 
@@ -202,5 +214,27 @@ public class RegistrarPersonasGui extends JDialog implements ActionListener{
 			RegistrarMascotasGui ventanaGestionMascotas=new RegistrarMascotasGui(null, true,txtDocumento.getText());
 			ventanaGestionMascotas.setVisible(true);
 		}
+		if (e.getSource()==btnRegistrar) {
+			NacimientoVO miNacimientoVO = new NacimientoVO();
+			PersonaVO miPersonaVO = new PersonaVO();	
+			miPersonaVO.setIdPersona(Long.parseLong(txtDocumento.getText()));
+			miPersonaVO.setNombre(txtNombre.getText());
+			miPersonaVO.setProfesion(txtProfesion.getText());
+			miPersonaVO.setTelefono(txtTelefono.getText());
+			miPersonaVO.setTipo(Integer.parseInt(txtTipo.getText()));
+			miNacimientoVO.setFechaNacimiento(LocalDate.of(Integer.parseInt(txtAnio.getText()),Integer.parseInt(txtMes.getText()), Integer.parseInt(txtDia.getText())));
+			miNacimientoVO.setCiudadNacimiento(txtCiudad.getText());
+			miNacimientoVO.setDepartamentoNacimiento(txtDepartamento.getText());
+			miNacimientoVO.setPaisNacimiento(txtPais.getText());
+			miPersonaVO.setNacimiento(miNacimientoVO);
+			
+			Long idNacimiento = miCoordinador.registrarNacimiento(miPersonaVO); 	
+			miCoordinador.registrarPersonas(miPersonaVO);
+		}
+	}
+
+
+	public void setCoordinador(Coordinador miCoordinador) {
+		this.miCoordinador=miCoordinador;
 	}
 }
